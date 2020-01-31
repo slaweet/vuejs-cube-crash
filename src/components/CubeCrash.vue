@@ -107,6 +107,17 @@ export default class CubeCrash extends Vue {
     if (this.tiles.length === 0) {
       this.gameStatus = 'You won!';
     }
+    if (this.noGroupOfThreeLeft()) {
+      this.gameStatus = 'Game over!';
+    }
+  }
+
+  noGroupOfThreeLeft() {
+    return this.tiles.map((column, i) => (
+      column.filter((tile, j) => (
+        [...this.getTilesToCrush(i, j)].length > 2
+      ))
+    )).filter(column => column.length > 0).length === 0;
   }
 
   startNewGame() {
