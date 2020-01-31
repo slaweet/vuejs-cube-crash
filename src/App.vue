@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <CubeCrash msg="Welcome to Your Vue.js + TypeScript App"/>
+    <CubeCrash/>
   </div>
 </template>
 

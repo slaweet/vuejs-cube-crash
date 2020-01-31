@@ -6,20 +6,7 @@
         <button v-on:click="startNewGame">New game</button>
       </div>
     </div>
-    <div class="wrapper">
-      <div v-for="(column, y) in tiles" v-bind:key="y" class="column">
-        <div v-for="(tile, x) in column"
-             v-bind:key="tile.id"
-             v-on:click="handleTileClick(y, x)">
-          <transition name="slide-fade" mode="out-in">
-            <div class="tile"
-               :style="{ background: tile.color }"
-                 ></div>
-
-          </transition>
-        </div>
-      </div>
-    </div>
+    <TileBoard :tiles="tiles" :handleTileClick="handleTileClick" />
     <div class="status" v-if="gameStatus">
       <h1>{{gameStatus}}</h1>
       <div>
@@ -31,6 +18,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import TileBoard from './TileBoard.vue';
 
 const size = 10;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
@@ -46,7 +34,11 @@ const generateTiles = () => (
   ))
 );
 
-@Component
+@Component({
+  components: {
+    TileBoard,
+  },
+})
 export default class CubeCrash extends Vue {
   @Prop() private tiles:{ color: string; id: number; }[][] = [];
 
@@ -149,34 +141,6 @@ button {
   font-size: 15px;
   padding: 8px 16px;
   cursor: pointer;
-}
-
-.wrapper {
-  height: 500px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.column {
-  display: flex;
-  flex-direction: column-reverse;
-}
-
-.tile {
-  display: flex;
-  width : 40px;
-  height : 40px;
-  border : 2px solid gray;
-  border-radius: 3px;
-  margin: 2px;
-  transition: all 200ms;
-  cursor: pointer;
-}
-
-.tile:hover {
-  transform: scale(0.9);
 }
 
 .status {
