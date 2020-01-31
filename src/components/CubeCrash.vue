@@ -2,7 +2,9 @@
   <div class="app">
     <div class="controls">
       <h2>Score: {{score}}</h2>
-      <button v-on:click="startNewGame">New game</button>
+      <div>
+        <button v-on:click="startNewGame">New game</button>
+      </div>
     </div>
     <div class="wrapper">
       <div v-for="(row, i) in tiles" v-bind:key="i" class="column">
@@ -16,6 +18,12 @@
 
           </transition>
         </div>
+      </div>
+    </div>
+    <div class="status" v-if="gameStatus">
+      <h1>{{gameStatus}}</h1>
+      <div>
+        <button v-on:click="startNewGame">New game</button>
       </div>
     </div>
   </div>
@@ -43,6 +51,8 @@ export default class CubeCrash extends Vue {
   @Prop() private tiles:{ color: string; id: number; }[][] = [];
 
   @Prop() private score:number = 0;
+
+  @Prop() private gameStatus:string = '';
 
   mounted() {
     this.tiles = generateTiles();
@@ -88,12 +98,20 @@ export default class CubeCrash extends Vue {
       )).filter(column => column.length > 0);
 
       this.score = this.score + Math.floor(tilesToCrushCount ** 1.5) * 100;
+      this.checkEndOfGame();
+    }
+  }
+
+  checkEndOfGame() {
+    if (this.tiles.length === 0) {
+      this.gameStatus = 'You won!';
     }
   }
 
   startNewGame() {
     this.score = 0;
     this.tiles = generateTiles();
+    this.gameStatus = '';
   }
 }
 </script>
@@ -102,12 +120,20 @@ export default class CubeCrash extends Vue {
 <style scoped lang="scss">
 .app {
   width: 476px;
+  margin: 20px auto;
 }
+
 .controls {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  align-items: center;
+}
+
+button {
   font-size: 15px;
+  padding: 8px 16px;
+  cursor: pointer;
 }
 
 .wrapper {
@@ -135,5 +161,18 @@ export default class CubeCrash extends Vue {
 
 .tile:hover {
   transform: scale(0.9);
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0,0,0,0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
 </style>
