@@ -93,8 +93,9 @@ export default class CubeCrash extends Vue {
     const tilesToCrushCount = [...tilesToCrush].length;
     if (tilesToCrushCount > 2) {
       this.tiles = this.tiles.map((column, i) => (
-        column.map((tile, j) => (
-          tilesToCrush.has(JSON.stringify({ i, j })) ? null : tile)).filter(tile => tile !== null)
+        column.filter((tile, j) => (
+          !tilesToCrush.has(JSON.stringify({ i, j }))
+        ))
       )).filter(column => column.length > 0);
 
       this.score = this.score + Math.floor(tilesToCrushCount ** 1.5) * 100;
@@ -141,6 +142,7 @@ button {
   width: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .column {
