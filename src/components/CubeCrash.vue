@@ -7,10 +7,10 @@
       </div>
     </div>
     <div class="wrapper">
-      <div v-for="(row, i) in tiles" v-bind:key="i" class="column">
-        <div v-for="(tile, j) in row"
+      <div v-for="(column, y) in tiles" v-bind:key="y" class="column">
+        <div v-for="(tile, x) in column"
              v-bind:key="tile.id"
-             v-on:click="removeTile(i, j)">
+             v-on:click="handleTileClick(y, x)">
           <transition name="slide-fade" mode="out-in">
             <div class="tile"
                :style="{ background: tile.color }"
@@ -58,49 +58,52 @@ export default class CubeCrash extends Vue {
     this.tiles = generateTiles();
   }
 
-  getNeighborTiles(i:number, j:number) {
+  getNeighborTiles(y:number, x:number) {
     const neighborTiles = [];
-    if (this.tiles[i][j + 1]) {
-      neighborTiles.push({ i, j: j + 1 });
+    if (this.tiles[y][x + 1]) {
+      neighborTiles.push({ y, x: x + 1 });
     }
-    if (this.tiles[i][j - 1]) {
-      neighborTiles.push({ i, j: j - 1 });
+    if (this.tiles[y][x - 1]) {
+      neighborTiles.push({ y, x: x - 1 });
     }
-    if (this.tiles[i + 1] && this.tiles[i + 1][j]) {
-      neighborTiles.push({ i: i + 1, j });
+    if (this.tiles[y + 1] && this.tiles[y + 1][x]) {
+      neighborTiles.push({ y: y + 1, x });
     }
-    if (this.tiles[i - 1] && this.tiles[i - 1][j]) {
-      neighborTiles.push({ i: i - 1, j });
+    if (this.tiles[y - 1] && this.tiles[y - 1][x]) {
+      neighborTiles.push({ y: y - 1, x });
     }
     return neighborTiles;
   }
 
-  getTilesToCrush(i:number, j:number, tilesToCrush = new Set()) {
-    const thisTile = this.tiles[i][j];
-    tilesToCrush.add(JSON.stringify({ i, j }));
-    const neighborTiles = this.getNeighborTiles(i, j);
+  getTilesToCrash(y:number, x:number, tilesToCrash:Set<string> = new Set()) {
+    const thisTile = this.tiles[y][x];
+    tilesToCrash.add(JSON.stringify({ y, x }));
+    const neighborTiles = this.getNeighborTiles(y, x);
     neighborTiles.forEach((neighborTile) => {
-      if (thisTile.color === this.tiles[neighborTile.i][neighborTile.j].color
-        && !tilesToCrush.has(JSON.stringify({ i: neighborTile.i, j: neighborTile.j }))) {
-        this.getTilesToCrush(neighborTile.i, neighborTile.j, tilesToCrush);
+      if (thisTile.color === this.tiles[neighborTile.y][neighborTile.x].color
+        && !tilesToCrash.has(JSON.stringify({ y: neighborTile.y, x: neighborTile.x }))) {
+        this.getTilesToCrash(neighborTile.y, neighborTile.x, tilesToCrash);
       }
     });
-    return tilesToCrush;
+    return tilesToCrash;
   }
 
-  removeTile(x:number, y:number) {
-    const tilesToCrush = this.getTilesToCrush(x, y);
-    const tilesToCrushCount = [...tilesToCrush].length;
-    if (tilesToCrushCount > 2) {
-      this.tiles = this.tiles.map((column, i) => (
-        column.filter((tile, j) => (
-          !tilesToCrush.has(JSON.stringify({ i, j }))
-        ))
-      )).filter(column => column.length > 0);
-
-      this.score = this.score + Math.floor(tilesToCrushCount ** 1.5) * 100;
-      this.checkEndOfGame();
+  handleTileClick(x:number, y:number) {
+    const tilesToCrash = this.getTilesToCrash(x, y);
+    if (tilesToCrash.size > 2) {
+      this.removeTiles(tilesToCrash);
     }
+  }
+
+  removeTiles(tilesToCrash:Set<string>) {
+    this.tiles = this.tiles.map((column, y) => (
+      column.filter((tile, x) => (
+        !tilesToCrash.has(JSON.stringify({ y, x }))
+      ))
+    )).filter(column => column.length > 0);
+
+    this.score = this.score + Math.floor(tilesToCrash.size ** 1.5) * 100;
+    this.checkEndOfGame();
   }
 
   checkEndOfGame() {
@@ -113,9 +116,9 @@ export default class CubeCrash extends Vue {
   }
 
   noGroupOfThreeLeft() {
-    return this.tiles.map((column, i) => (
-      column.filter((tile, j) => (
-        [...this.getTilesToCrush(i, j)].length > 2
+    return this.tiles.map((column, y) => (
+      column.filter((tile, x) => (
+        [...this.getTilesToCrash(y, x)].length > 2
       ))
     )).filter(column => column.length > 0).length === 0;
   }
