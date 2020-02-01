@@ -1,9 +1,7 @@
 import hash from 'object-hash';
 import { CubeGrid, Coordinates } from './types';
+import { gridSize, minimumCrashSize, colors } from './config';
 
-const gridSize = 10;
-const minimumCrashSize = 3;
-const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
 let id = 0;
 
 export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates): Coordinates[] => {

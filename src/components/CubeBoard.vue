@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div v-for="(column, y) in cubes"
-      v-bind:key="column[0].id - column[0].id % 10"
+      v-bind:key="column[0].id - column[0].id % gridSize"
       class="column">
       <transition-group class="column" name="crash" tag="div">
         <button v-for="(cube, x) in column"
@@ -24,6 +24,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Coordinates, CubeGrid } from '../types';
+import { gridSize } from '../config';
 
 @Component
 export default class CubeBoard extends Vue {
@@ -32,6 +33,8 @@ export default class CubeBoard extends Vue {
   @Prop() handleCubeClick:(coordinates: Coordinates)=>void;
 
   private activeGroupHash: string = '';
+
+  private gridSize: number = gridSize;
 }
 </script>
 
