@@ -3,7 +3,7 @@
     <div v-for="(column, y) in tiles" v-bind:key="y" class="column">
       <div v-for="(tile, x) in column"
            v-bind:key="tile.id"
-           v-on:click="handleTileClick(y, x)">
+           v-on:click="handleTileClick({ y, x })">
         <transition name="slide-fade" mode="out-in">
           <button class="tile" :style="{ background: tile.color }"></button>
         </transition>
@@ -14,12 +14,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Coordinates, Tile } from '../types';
 
 @Component
 export default class TileBoard extends Vue {
-  @Prop() tiles:{ color: string; id: number; }[][];
+  @Prop() tiles:Tile[][];
 
-  @Prop() handleTileClick:(y:number, x:number)=>void;
+  @Prop() handleTileClick:(coordinates: Coordinates)=>void;
 }
 </script>
 

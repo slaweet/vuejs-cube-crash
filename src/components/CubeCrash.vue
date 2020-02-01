@@ -19,6 +19,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import TileBoard from './TileBoard.vue';
+import { Tile, Coordinates } from '../types';
 
 const size = 10;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
@@ -40,7 +41,7 @@ const generateTiles = () => (
   },
 })
 export default class CubeCrash extends Vue {
-  private tiles:{ color: string; id: number; }[][] = [];
+  private tiles:Tile[][] = [];
 
   private score:number = 0;
 
@@ -50,7 +51,7 @@ export default class CubeCrash extends Vue {
     this.tiles = generateTiles();
   }
 
-  getNeighborTiles(y:number, x:number) {
+  getNeighborTiles({ y, x }: Coordinates) {
     const neighborTiles = [];
     if (this.tiles[y][x + 1]) {
       neighborTiles.push({ y, x: x + 1 });
@@ -67,21 +68,21 @@ export default class CubeCrash extends Vue {
     return neighborTiles;
   }
 
-  getTilesToCrash(y:number, x:number, tilesToCrash:Set<string> = new Set()) {
+  getTilesToCrash({ y, x }: Coordinates, tilesToCrash:Set<string> = new Set()) {
     const thisTile = this.tiles[y][x];
     tilesToCrash.add(JSON.stringify({ y, x }));
-    const neighborTiles = this.getNeighborTiles(y, x);
+    const neighborTiles = this.getNeighborTiles({ y, x });
     neighborTiles.forEach((neighborTile) => {
       if (thisTile.color === this.tiles[neighborTile.y][neighborTile.x].color
         && !tilesToCrash.has(JSON.stringify({ y: neighborTile.y, x: neighborTile.x }))) {
-        this.getTilesToCrash(neighborTile.y, neighborTile.x, tilesToCrash);
+        this.getTilesToCrash(neighborTile, tilesToCrash);
       }
     });
     return tilesToCrash;
   }
 
-  handleTileClick(x:number, y:number) {
-    const tilesToCrash = this.getTilesToCrash(x, y);
+  handleTileClick(coordinates: Coordinates) {
+    const tilesToCrash = this.getTilesToCrash(coordinates);
     if (tilesToCrash.size > 2) {
       this.removeTiles(tilesToCrash);
     }
@@ -110,7 +111,7 @@ export default class CubeCrash extends Vue {
   noGroupOfThreeLeft() {
     return this.tiles.map((column, y) => (
       column.filter((tile, x) => (
-        [...this.getTilesToCrash(y, x)].length > 2
+        [...this.getTilesToCrash({ y, x })].length > 2
       ))
     )).filter((column) => column.length > 0).length === 0;
   }
