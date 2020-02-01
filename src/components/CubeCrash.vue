@@ -62,8 +62,7 @@ export default class CubeCrash extends Vue {
   checkEndOfGame():void {
     if (this.cubes.length === 0) {
       this.gameStatus = 'You won!';
-    }
-    if (this.noGroupOfThreeLeft()) {
+    } else if (this.noGroupOfThreeLeft()) {
       this.gameStatus = 'Game over!';
     }
   }
