@@ -20,7 +20,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import TileBoard from './TileBoard.vue';
 import { TileGrid, Coordinates } from '../types';
-import { generateTiles } from '../utils';
+import { generateTiles, getTilesToCrash } from '../utils';
 
 @Component({
   components: {
@@ -38,38 +38,8 @@ export default class CubeCrash extends Vue {
     this.startNewGame();
   }
 
-  getNeighborTiles({ y, x }: Coordinates):Coordinates[] {
-    const neighborTiles = [];
-    if (this.tiles[y][x + 1]) {
-      neighborTiles.push({ y, x: x + 1 });
-    }
-    if (this.tiles[y][x - 1]) {
-      neighborTiles.push({ y, x: x - 1 });
-    }
-    if (this.tiles[y + 1] && this.tiles[y + 1][x]) {
-      neighborTiles.push({ y: y + 1, x });
-    }
-    if (this.tiles[y - 1] && this.tiles[y - 1][x]) {
-      neighborTiles.push({ y: y - 1, x });
-    }
-    return neighborTiles;
-  }
-
-  getTilesToCrash({ y, x }: Coordinates, tilesToCrash:Set<string> = new Set()):Set<string> {
-    const thisTile = this.tiles[y][x];
-    tilesToCrash.add(JSON.stringify({ y, x }));
-    const neighborTiles = this.getNeighborTiles({ y, x });
-    neighborTiles.forEach((neighborTile) => {
-      if (thisTile.color === this.tiles[neighborTile.y][neighborTile.x].color
-        && !tilesToCrash.has(JSON.stringify({ y: neighborTile.y, x: neighborTile.x }))) {
-        this.getTilesToCrash(neighborTile, tilesToCrash);
-      }
-    });
-    return tilesToCrash;
-  }
-
   handleTileClick(coordinates: Coordinates):void {
-    const tilesToCrash = this.getTilesToCrash(coordinates);
+    const tilesToCrash = getTilesToCrash(this.tiles, coordinates);
     if (tilesToCrash.size > 2) {
       this.removeTiles(tilesToCrash);
     }
@@ -98,7 +68,7 @@ export default class CubeCrash extends Vue {
   noGroupOfThreeLeft():Boolean {
     return this.tiles.map((column, y) => (
       column.filter((tile, x) => (
-        [...this.getTilesToCrash({ y, x })].length > 2
+        getTilesToCrash(this.tiles, { y, x }).size > 2
       ))
     )).filter((column) => column.length > 0).length === 0;
   }
