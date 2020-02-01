@@ -5,9 +5,9 @@
            v-bind:key="tile.id"
            v-on:click="handleTileClick(y, x)">
         <transition name="slide-fade" mode="out-in">
-          <div class="tile"
+          <button class="tile"
              :style="{ background: tile.color }"
-               ></div>
+               ></button>
 
         </transition>
       </div>
@@ -29,7 +29,7 @@ export default class TileBoard extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .wrapper {
-  height: 500px;
+  height: 450px;
   width: 100%;
   display: flex;
   flex-direction: row;

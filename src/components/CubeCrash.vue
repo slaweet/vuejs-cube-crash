@@ -126,8 +126,8 @@ export default class CubeCrash extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .app {
-  width: 476px;
-  margin: 20px auto;
+  width: 437px;
+  margin: 0 auto;
 }
 
 .controls {
@@ -140,6 +140,8 @@ export default class CubeCrash extends Vue {
 button {
   font-size: 15px;
   padding: 8px 16px;
+  border : 2px solid gray;
+  border-radius: 3px;
   cursor: pointer;
 }
 
