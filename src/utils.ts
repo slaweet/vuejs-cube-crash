@@ -1,10 +1,10 @@
-import { TileGrid, Coordinates } from './types';
+import { CubeGrid, Coordinates } from './types';
 
 const size = 10;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
 let id = 1;
 
-export const generateTiles = ():TileGrid => (
+export const generateCubes = ():CubeGrid => (
   [...new Array(size)].map(() => (
     [...new Array(size)].map(
       () => ({
@@ -15,36 +15,36 @@ export const generateTiles = ():TileGrid => (
   ))
 );
 
-export const getNeighborTiles = (tiles: TileGrid, { y, x }: Coordinates):Coordinates[] => {
-  const neighborTiles = [];
-  if (tiles[y][x + 1]) {
-    neighborTiles.push({ y, x: x + 1 });
+export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates):Coordinates[] => {
+  const neighborCubes = [];
+  if (cubes[y][x + 1]) {
+    neighborCubes.push({ y, x: x + 1 });
   }
-  if (tiles[y][x - 1]) {
-    neighborTiles.push({ y, x: x - 1 });
+  if (cubes[y][x - 1]) {
+    neighborCubes.push({ y, x: x - 1 });
   }
-  if (tiles[y + 1] && tiles[y + 1][x]) {
-    neighborTiles.push({ y: y + 1, x });
+  if (cubes[y + 1] && cubes[y + 1][x]) {
+    neighborCubes.push({ y: y + 1, x });
   }
-  if (tiles[y - 1] && tiles[y - 1][x]) {
-    neighborTiles.push({ y: y - 1, x });
+  if (cubes[y - 1] && cubes[y - 1][x]) {
+    neighborCubes.push({ y: y - 1, x });
   }
-  return neighborTiles;
+  return neighborCubes;
 };
 
-export const getTilesToCrash = (
-  tiles: TileGrid,
+export const getCubesToCrash = (
+  cubes: CubeGrid,
   { y, x }: Coordinates,
-  tilesToCrash:Set<string> = new Set(),
+  cubesToCrash:Set<string> = new Set(),
 ):Set<string> => {
-  const thisTile = tiles[y][x];
-  tilesToCrash.add(JSON.stringify({ y, x }));
-  const neighborTiles = getNeighborTiles(tiles, { y, x });
-  neighborTiles.forEach((neighborTile) => {
-    if (thisTile.color === tiles[neighborTile.y][neighborTile.x].color
-      && !tilesToCrash.has(JSON.stringify({ y: neighborTile.y, x: neighborTile.x }))) {
-      getTilesToCrash(tiles, neighborTile, tilesToCrash);
+  const thisCube = cubes[y][x];
+  cubesToCrash.add(JSON.stringify({ y, x }));
+  const neighborCubes = getNeighborCubes(cubes, { y, x });
+  neighborCubes.forEach((neighborCube) => {
+    if (thisCube.color === cubes[neighborCube.y][neighborCube.x].color
+      && !cubesToCrash.has(JSON.stringify({ y: neighborCube.y, x: neighborCube.x }))) {
+      getCubesToCrash(cubes, neighborCube, cubesToCrash);
     }
   });
-  return tilesToCrash;
+  return cubesToCrash;
 };

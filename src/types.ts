@@ -1,9 +1,9 @@
-export interface Tile {
+export interface Cube {
   id: number
   color: string
 }
 
-export interface TileGrid extends Array<Array<Tile>> { }
+export interface CubeGrid extends Array<Array<Cube>> { }
 
 export interface Coordinates {
   x: number

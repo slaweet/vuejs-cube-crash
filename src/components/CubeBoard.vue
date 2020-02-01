@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper">
-    <div v-for="(column, y) in tiles" v-bind:key="y" class="column">
-      <div v-for="(tile, x) in column"
-           v-bind:key="tile.id"
-           v-on:click="handleTileClick({ y, x })">
+    <div v-for="(column, y) in cubes" v-bind:key="y" class="column">
+      <div v-for="(cube, x) in column"
+           v-bind:key="cube.id"
+           v-on:click="handleCubeClick({ y, x })">
         <transition name="slide-fade" mode="out-in">
-          <button class="tile" :style="{ background: tile.color }"></button>
+          <button class="cube" :style="{ background: cube.color }"></button>
         </transition>
       </div>
     </div>
@@ -14,13 +14,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Coordinates, TileGrid } from '../types';
+import { Coordinates, CubeGrid } from '../types';
 
 @Component
-export default class TileBoard extends Vue {
-  @Prop() tiles:TileGrid;
+export default class CubeBoard extends Vue {
+  @Prop() cubes:CubeGrid;
 
-  @Prop() handleTileClick:(coordinates: Coordinates)=>void;
+  @Prop() handleCubeClick:(coordinates: Coordinates)=>void;
 }
 </script>
 
@@ -39,7 +39,7 @@ export default class TileBoard extends Vue {
   flex-direction: column-reverse;
 }
 
-.tile {
+.cube {
   display: flex;
   width : 40px;
   height : 40px;
@@ -50,7 +50,7 @@ export default class TileBoard extends Vue {
   cursor: pointer;
 }
 
-.tile:hover {
+.cube:hover {
   transform: scale(0.9);
 }
 

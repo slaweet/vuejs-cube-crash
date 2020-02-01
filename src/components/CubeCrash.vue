@@ -6,7 +6,7 @@
         <button v-on:click="startNewGame">New game</button>
       </div>
     </div>
-    <TileBoard :tiles="tiles" :handleTileClick="handleTileClick" />
+    <CubeBoard :cubes="cubes" :handleCubeClick="handleCubeClick" />
     <div class="status" v-if="gameStatus">
       <h1>{{gameStatus}}</h1>
       <div>
@@ -18,17 +18,17 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import TileBoard from './TileBoard.vue';
-import { TileGrid, Coordinates } from '../types';
-import { generateTiles, getTilesToCrash } from '../utils';
+import CubeBoard from './CubeBoard.vue';
+import { CubeGrid, Coordinates } from '../types';
+import { generateCubes, getCubesToCrash } from '../utils';
 
 @Component({
   components: {
-    TileBoard,
+    CubeBoard,
   },
 })
 export default class CubeCrash extends Vue {
-  private tiles:TileGrid = [];
+  private cubes:CubeGrid = [];
 
   private score:number = 0;
 
@@ -38,26 +38,26 @@ export default class CubeCrash extends Vue {
     this.startNewGame();
   }
 
-  handleTileClick(coordinates: Coordinates):void {
-    const tilesToCrash = getTilesToCrash(this.tiles, coordinates);
-    if (tilesToCrash.size > 2) {
-      this.removeTiles(tilesToCrash);
+  handleCubeClick(coordinates: Coordinates):void {
+    const cubesToCrash = getCubesToCrash(this.cubes, coordinates);
+    if (cubesToCrash.size > 2) {
+      this.removeCubes(cubesToCrash);
     }
   }
 
-  removeTiles(tilesToCrash:Set<string>):void {
-    this.tiles = this.tiles.map((column, y) => (
-      column.filter((tile, x) => (
-        !tilesToCrash.has(JSON.stringify({ y, x }))
+  removeCubes(cubesToCrash:Set<string>):void {
+    this.cubes = this.cubes.map((column, y) => (
+      column.filter((cube, x) => (
+        !cubesToCrash.has(JSON.stringify({ y, x }))
       ))
     )).filter((column) => column.length > 0);
 
-    this.score = this.score + Math.floor(tilesToCrash.size ** 1.5) * 100;
+    this.score = this.score + Math.floor(cubesToCrash.size ** 1.5) * 100;
     this.checkEndOfGame();
   }
 
   checkEndOfGame():void {
-    if (this.tiles.length === 0) {
+    if (this.cubes.length === 0) {
       this.gameStatus = 'You won!';
     }
     if (this.noGroupOfThreeLeft()) {
@@ -66,16 +66,16 @@ export default class CubeCrash extends Vue {
   }
 
   noGroupOfThreeLeft():Boolean {
-    return this.tiles.map((column, y) => (
-      column.filter((tile, x) => (
-        getTilesToCrash(this.tiles, { y, x }).size > 2
+    return this.cubes.map((column, y) => (
+      column.filter((cube, x) => (
+        getCubesToCrash(this.cubes, { y, x }).size > 2
       ))
     )).filter((column) => column.length > 0).length === 0;
   }
 
   startNewGame() {
     this.score = 0;
-    this.tiles = generateTiles();
+    this.cubes = generateCubes();
     this.gameStatus = '';
   }
 }
