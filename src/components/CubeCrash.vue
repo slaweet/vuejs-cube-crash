@@ -19,21 +19,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import TileBoard from './TileBoard.vue';
-import { Tile, Coordinates } from '../types';
-
-const size = 10;
-const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
-let id = 1;
-const generateTiles = () => (
-  [...new Array(size)].map(() => (
-    [...new Array(size)].map(
-      () => ({
-        color: colors[Math.floor(Math.random() * 1000) % colors.length],
-        id: id++, // eslint-disable-line no-plusplus
-      }),
-    )
-  ))
-);
+import { TileGrid, Coordinates } from '../types';
+import { generateTiles } from '../utils';
 
 @Component({
   components: {
@@ -41,17 +28,17 @@ const generateTiles = () => (
   },
 })
 export default class CubeCrash extends Vue {
-  private tiles:Tile[][] = [];
+  private tiles:TileGrid = [];
 
   private score:number = 0;
 
   private gameStatus:string = '';
 
   mounted() {
-    this.tiles = generateTiles();
+    this.startNewGame();
   }
 
-  getNeighborTiles({ y, x }: Coordinates) {
+  getNeighborTiles({ y, x }: Coordinates):Coordinates[] {
     const neighborTiles = [];
     if (this.tiles[y][x + 1]) {
       neighborTiles.push({ y, x: x + 1 });
@@ -68,7 +55,7 @@ export default class CubeCrash extends Vue {
     return neighborTiles;
   }
 
-  getTilesToCrash({ y, x }: Coordinates, tilesToCrash:Set<string> = new Set()) {
+  getTilesToCrash({ y, x }: Coordinates, tilesToCrash:Set<string> = new Set()):Set<string> {
     const thisTile = this.tiles[y][x];
     tilesToCrash.add(JSON.stringify({ y, x }));
     const neighborTiles = this.getNeighborTiles({ y, x });
@@ -81,14 +68,14 @@ export default class CubeCrash extends Vue {
     return tilesToCrash;
   }
 
-  handleTileClick(coordinates: Coordinates) {
+  handleTileClick(coordinates: Coordinates):void {
     const tilesToCrash = this.getTilesToCrash(coordinates);
     if (tilesToCrash.size > 2) {
       this.removeTiles(tilesToCrash);
     }
   }
 
-  removeTiles(tilesToCrash:Set<string>) {
+  removeTiles(tilesToCrash:Set<string>):void {
     this.tiles = this.tiles.map((column, y) => (
       column.filter((tile, x) => (
         !tilesToCrash.has(JSON.stringify({ y, x }))
@@ -99,7 +86,7 @@ export default class CubeCrash extends Vue {
     this.checkEndOfGame();
   }
 
-  checkEndOfGame() {
+  checkEndOfGame():void {
     if (this.tiles.length === 0) {
       this.gameStatus = 'You won!';
     }
@@ -108,7 +95,7 @@ export default class CubeCrash extends Vue {
     }
   }
 
-  noGroupOfThreeLeft() {
+  noGroupOfThreeLeft():Boolean {
     return this.tiles.map((column, y) => (
       column.filter((tile, x) => (
         [...this.getTilesToCrash({ y, x })].length > 2

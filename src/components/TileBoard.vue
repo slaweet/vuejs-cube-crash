@@ -14,11 +14,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Coordinates, Tile } from '../types';
+import { Coordinates, TileGrid } from '../types';
 
 @Component
 export default class TileBoard extends Vue {
-  @Prop() tiles:Tile[][];
+  @Prop() tiles:TileGrid;
 
   @Prop() handleTileClick:(coordinates: Coordinates)=>void;
 }

@@ -3,6 +3,8 @@ export interface Tile {
   color: string
 }
 
+export interface TileGrid extends Array<Array<Tile>> { }
+
 export interface Coordinates {
   x: number
   y: number
