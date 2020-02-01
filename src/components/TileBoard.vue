@@ -5,10 +5,7 @@
            v-bind:key="tile.id"
            v-on:click="handleTileClick(y, x)">
         <transition name="slide-fade" mode="out-in">
-          <button class="tile"
-             :style="{ background: tile.color }"
-               ></button>
-
+          <button class="tile" :style="{ background: tile.color }"></button>
         </transition>
       </div>
     </div>
@@ -20,9 +17,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class TileBoard extends Vue {
-  @Prop() tiles:{ color: string; id: number; }[][] = [];
+  @Prop() tiles:{ color: string; id: number; }[][];
 
-  @Prop() handleTileClick:(y:number, x:number)=>void = () => {};
+  @Prop() handleTileClick:(y:number, x:number)=>void;
 }
 </script>
 

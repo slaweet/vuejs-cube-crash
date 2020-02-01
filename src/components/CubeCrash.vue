@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import TileBoard from './TileBoard.vue';
 
 const size = 10;
@@ -40,11 +40,11 @@ const generateTiles = () => (
   },
 })
 export default class CubeCrash extends Vue {
-  @Prop() private tiles:{ color: string; id: number; }[][] = [];
+  private tiles:{ color: string; id: number; }[][] = [];
 
-  @Prop() private score:number = 0;
+  private score:number = 0;
 
-  @Prop() private gameStatus:string = '';
+  private gameStatus:string = '';
 
   mounted() {
     this.tiles = generateTiles();
