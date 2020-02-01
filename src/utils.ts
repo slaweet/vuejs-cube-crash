@@ -4,7 +4,7 @@ const size = 10;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
 let id = 1;
 
-export const generateCubes = ():CubeGrid => (
+export const generateCubes = (): CubeGrid => (
   [...new Array(size)].map(() => (
     [...new Array(size)].map(
       () => ({
@@ -15,7 +15,7 @@ export const generateCubes = ():CubeGrid => (
   ))
 );
 
-export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates):Coordinates[] => {
+export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates): Coordinates[] => {
   const neighborCubes = [];
   if (cubes[y][x + 1]) {
     neighborCubes.push({ y, x: x + 1 });
@@ -35,8 +35,8 @@ export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates):Coordin
 export const getCubesToCrash = (
   cubes: CubeGrid,
   { y, x }: Coordinates,
-  cubesToCrash:Set<string> = new Set(),
-):Set<string> => {
+  cubesToCrash: Set<string> = new Set(),
+): Set<string> => {
   const thisCube = cubes[y][x];
   cubesToCrash.add(JSON.stringify({ y, x }));
   const neighborCubes = getNeighborCubes(cubes, { y, x });
@@ -48,3 +48,18 @@ export const getCubesToCrash = (
   });
   return cubesToCrash;
 };
+
+export const fiterCrashedCubes = (
+  cubes: CubeGrid,
+  cubesToCrash: Set<string>,
+): CubeGrid => (
+  cubes.map((column, y) => (
+    column.filter((cube, x) => (
+      !cubesToCrash.has(JSON.stringify({ y, x }))
+    ))
+  )).filter((column) => column.length > 0)
+);
+
+export const getCrashedCubesValue = (cubesToCrash: Set<string>): number => (
+  Math.floor(cubesToCrash.size ** 1.5) * 100
+);

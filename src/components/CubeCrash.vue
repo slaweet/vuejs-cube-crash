@@ -20,7 +20,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 import CubeBoard from './CubeBoard.vue';
 import { CubeGrid, Coordinates } from '../types';
-import { generateCubes, getCubesToCrash } from '../utils';
+import {
+  generateCubes, getCubesToCrash, fiterCrashedCubes, getCrashedCubesValue,
+} from '../utils';
 
 @Component({
   components: {
@@ -38,22 +40,19 @@ export default class CubeCrash extends Vue {
     this.startNewGame();
   }
 
+  startNewGame() {
+    this.score = 0;
+    this.cubes = generateCubes();
+    this.gameStatus = '';
+  }
+
   handleCubeClick(coordinates: Coordinates):void {
     const cubesToCrash = getCubesToCrash(this.cubes, coordinates);
     if (cubesToCrash.size > 2) {
-      this.removeCubes(cubesToCrash);
+      this.cubes = fiterCrashedCubes(this.cubes, cubesToCrash);
+      this.score = this.score + getCrashedCubesValue(cubesToCrash);
+      this.checkEndOfGame();
     }
-  }
-
-  removeCubes(cubesToCrash:Set<string>):void {
-    this.cubes = this.cubes.map((column, y) => (
-      column.filter((cube, x) => (
-        !cubesToCrash.has(JSON.stringify({ y, x }))
-      ))
-    )).filter((column) => column.length > 0);
-
-    this.score = this.score + Math.floor(cubesToCrash.size ** 1.5) * 100;
-    this.checkEndOfGame();
   }
 
   checkEndOfGame():void {
@@ -71,12 +70,6 @@ export default class CubeCrash extends Vue {
         getCubesToCrash(this.cubes, { y, x }).size > 2
       ))
     )).filter((column) => column.length > 0).length === 0;
-  }
-
-  startNewGame() {
-    this.score = 0;
-    this.cubes = generateCubes();
-    this.gameStatus = '';
   }
 }
 </script>
