@@ -6,8 +6,13 @@
       <transition-group class="column" name="crash" tag="div">
         <button v-for="(cube, x) in column"
           v-bind:key="cube.id"
-          v-on:click="handleCubeClick({ x, y })"
-          class="cube"
+          @click="handleCubeClick({ x, y })"
+          @mouseover="activeGroupHash = cube.groupHash"
+          @mouseleave="activeGroupHash = null"
+          :class="[
+            'cube',
+            cube.groupHash && cube.groupHash === activeGroupHash && 'active',
+          ].join(' ')"
           :style="{ background: cube.color, color: cube.color }">
           x: {{x}} y: {{y}}
         </button>
@@ -25,6 +30,8 @@ export default class CubeBoard extends Vue {
   @Prop() cubes:CubeGrid;
 
   @Prop() handleCubeClick:(coordinates: Coordinates)=>void;
+
+  private activeGroupHash: string = '';
 }
 </script>
 
@@ -51,11 +58,12 @@ export default class CubeBoard extends Vue {
   border-radius: 3px;
   margin: 2px;
   transition: all 200ms;
-  cursor: pointer;
 }
 
-.cube:hover {
-  transform: scale(0.9);
+.active {
+  cursor: pointer;
+  transform: scale(0.95) rotate(3deg);
+  opacity: 0.9;
 }
 
 .crash, .crash-enter-active, .crash-leave-active {
@@ -66,7 +74,7 @@ export default class CubeBoard extends Vue {
   opacity: 0;
   height: 0;
   width: 0;
-  transform: rotate(360deg);
+  transform: scale(0.05) rotate(360deg);
   margin: 0;
 }
 </style>

@@ -1,20 +1,10 @@
+import hash from 'object-hash';
 import { CubeGrid, Coordinates } from './types';
 
 const gridSize = 10;
 const minimumCrashSize = 3;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
 let id = 0;
-
-export const generateCubes = (): CubeGrid => (
-  [...new Array(gridSize)].map(() => (
-    [...new Array(gridSize)].map(
-      () => ({
-        color: colors[Math.floor(Math.random() * 1000) % colors.length],
-        id: id++, // eslint-disable-line no-plusplus
-      }),
-    )
-  ))
-);
 
 export const getNeighborCubes = (cubes: CubeGrid, { y, x }: Coordinates): Coordinates[] => {
   const neighborCubes = [];
@@ -50,21 +40,45 @@ export const getCubesToCrash = (
   return cubesToCrash;
 };
 
+export const areCrashable = (cubesToCrash: Set<string>): Boolean => (
+  cubesToCrash.size >= minimumCrashSize
+);
+
+const addGroupHashes = (cubes: CubeGrid): CubeGrid => (
+  cubes.map((column, y) => (
+    column.map((cube, x) => {
+      const cubesToCrash = getCubesToCrash(cubes, { x, y });
+      const groupHash = areCrashable(cubesToCrash) ? hash(cubesToCrash).substr(0, 10) : '';
+      return {
+        ...cube,
+        groupHash,
+      };
+    })
+  ))
+);
+
+export const generateCubes = (): CubeGrid => (
+  addGroupHashes([...new Array(gridSize)].map(() => (
+    [...new Array(gridSize)].map(
+      () => ({
+        color: colors[Math.floor(Math.random() * 1000) % colors.length],
+        id: id++, // eslint-disable-line no-plusplus
+      }),
+    )
+  )))
+);
+
 export const fiterCrashedCubes = (
   cubes: CubeGrid,
   cubesToCrash: Set<string>,
 ): CubeGrid => (
-  cubes.map((column, y) => (
+  addGroupHashes(cubes.map((column, y) => (
     column.filter((cube, x) => (
       !cubesToCrash.has(JSON.stringify({ y, x }))
     ))
-  )).filter((column) => column.length > 0)
+  )).filter((column) => column.length > 0))
 );
 
 export const getCrashedCubesValue = (cubesToCrash: Set<string>): number => (
   Math.floor(cubesToCrash.size ** 1.5) * 100
-);
-
-export const areCrashable = (cubesToCrash: Set<string>): Boolean => (
-  cubesToCrash.size >= minimumCrashSize
 );
