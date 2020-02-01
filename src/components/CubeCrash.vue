@@ -92,7 +92,7 @@ export default class CubeCrash extends Vue {
       column.filter((tile, x) => (
         !tilesToCrash.has(JSON.stringify({ y, x }))
       ))
-    )).filter(column => column.length > 0);
+    )).filter((column) => column.length > 0);
 
     this.score = this.score + Math.floor(tilesToCrash.size ** 1.5) * 100;
     this.checkEndOfGame();
@@ -112,7 +112,7 @@ export default class CubeCrash extends Vue {
       column.filter((tile, x) => (
         [...this.getTilesToCrash(y, x)].length > 2
       ))
-    )).filter(column => column.length > 0).length === 0;
+    )).filter((column) => column.length > 0).length === 0;
   }
 
   startNewGame() {
