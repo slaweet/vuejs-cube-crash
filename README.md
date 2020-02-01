@@ -7,7 +7,7 @@
 
 # vuejs-cube-crash
 
-Cube crash game written in Vue.js. Just for fun 🎉
+Cube crash game written in Vue.js. Just for fun 🎉 [Live demo](https://vuejs-cube-crash.herokuapp.com/)
 
 ![Sample screenshot](screenshot.png)
 
