@@ -1,12 +1,13 @@
 import { CubeGrid, Coordinates } from './types';
 
-const size = 10;
+const gridSize = 10;
+const minimumCrashSize = 3;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
 let id = 1;
 
 export const generateCubes = (): CubeGrid => (
-  [...new Array(size)].map(() => (
-    [...new Array(size)].map(
+  [...new Array(gridSize)].map(() => (
+    [...new Array(gridSize)].map(
       () => ({
         color: colors[Math.floor(Math.random() * 1000) % colors.length],
         id: id++, // eslint-disable-line no-plusplus
@@ -62,4 +63,8 @@ export const fiterCrashedCubes = (
 
 export const getCrashedCubesValue = (cubesToCrash: Set<string>): number => (
   Math.floor(cubesToCrash.size ** 1.5) * 100
+);
+
+export const areCrashable = (cubesToCrash: Set<string>): Boolean => (
+  cubesToCrash.size >= minimumCrashSize
 );

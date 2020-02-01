@@ -21,7 +21,11 @@ import { Component, Vue } from 'vue-property-decorator';
 import CubeBoard from './CubeBoard.vue';
 import { CubeGrid, Coordinates } from '../types';
 import {
-  generateCubes, getCubesToCrash, fiterCrashedCubes, getCrashedCubesValue,
+  areCrashable,
+  fiterCrashedCubes,
+  generateCubes,
+  getCrashedCubesValue,
+  getCubesToCrash,
 } from '../utils';
 
 @Component({
@@ -48,7 +52,7 @@ export default class CubeCrash extends Vue {
 
   handleCubeClick(coordinates: Coordinates):void {
     const cubesToCrash = getCubesToCrash(this.cubes, coordinates);
-    if (cubesToCrash.size > 2) {
+    if (areCrashable(cubesToCrash)) {
       this.cubes = fiterCrashedCubes(this.cubes, cubesToCrash);
       this.score = this.score + getCrashedCubesValue(cubesToCrash);
       this.checkEndOfGame();
@@ -67,7 +71,7 @@ export default class CubeCrash extends Vue {
   noGroupOfThreeLeft():Boolean {
     return this.cubes.map((column, y) => (
       column.filter((cube, x) => (
-        getCubesToCrash(this.cubes, { y, x }).size > 2
+        areCrashable(getCubesToCrash(this.cubes, { y, x }))
       ))
     )).filter((column) => column.length > 0).length === 0;
   }
