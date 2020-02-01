@@ -1,13 +1,17 @@
 <template>
   <div class="wrapper">
-    <div v-for="(column, y) in cubes" v-bind:key="y" class="column">
-      <div v-for="(cube, x) in column"
-           v-bind:key="cube.id"
-           v-on:click="handleCubeClick({ y, x })">
-        <transition name="slide-fade" mode="out-in">
-          <button class="cube" :style="{ background: cube.color }"></button>
-        </transition>
-      </div>
+    <div v-for="(column, y) in cubes"
+      v-bind:key="column[0].id - column[0].id % 10"
+      class="column">
+      <transition-group class="column" name="crash" tag="div">
+        <button v-for="(cube, x) in column"
+          v-bind:key="cube.id"
+          v-on:click="handleCubeClick({ x, y })"
+          class="cube"
+          :style="{ background: cube.color, color: cube.color }">
+          x: {{x}} y: {{y}}
+        </button>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -54,4 +58,15 @@ export default class CubeBoard extends Vue {
   transform: scale(0.9);
 }
 
+.crash, .crash-enter-active, .crash-leave-active {
+  transition: all 500ms ease-in-out;
+}
+
+.crash-enter, .crash-leave-to /* .crash-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  height: 0;
+  width: 0;
+  transform: rotate(360deg);
+  margin: 0;
+}
 </style>

@@ -3,7 +3,7 @@ import { CubeGrid, Coordinates } from './types';
 const gridSize = 10;
 const minimumCrashSize = 3;
 const colors = ['#7da3e0', '#F6546A', '#5AC18E'];
-let id = 1;
+let id = 0;
 
 export const generateCubes = (): CubeGrid => (
   [...new Array(gridSize)].map(() => (
