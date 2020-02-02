@@ -7,6 +7,10 @@
       </div>
     </div>
     <CubeBoard :cubes="cubes" :handleCubeClick="handleCubeClick" />
+    <div class="footer">
+      Built with <a href="https://vuejs.org/" target="_blank">Vue.js</a>
+      and ❤️  by <a href="https://github.com/slaweet" target="_blank">slaweet</a>
+    </div>
     <div class="status" v-if="gameStatus">
       <h1>{{gameStatus}}</h1>
       <div>
@@ -81,11 +85,16 @@ export default class CubeCrash extends Vue {
 <style scoped lang="scss">
 .app {
   margin: 0 auto;
+  min-height: 98vh;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
 }
 
 .controls {
   display: flex;
-  width: 100%;
+  width: 442px;
   justify-content: space-between;
   align-items: center;
 }
