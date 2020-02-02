@@ -1,6 +1,8 @@
 import hash from 'object-hash';
 import { CubeGrid, Coordinates } from './types';
-import { gridSize, minimumCrashSize, colors } from './config';
+import {
+  gridSize, minimumCrashSize, colors, highScoreListLength,
+} from './config';
 
 let id = 0;
 
@@ -80,3 +82,18 @@ export const fiterCrashedCubes = (
 export const getCrashedCubesValue = (cubesToCrash: Set<string>): number => (
   Math.floor(cubesToCrash.size ** 1.5) * 100
 );
+
+export const getHighScores = (): number[] => (
+  (localStorage.getItem('scores') || '').split(',').filter((x) => x).map((x) => parseInt(x, 10))
+);
+
+const addHighScore = (highScores: number[], score: number): number[] => (
+  [
+    ...highScores,
+    score,
+  ].sort((a, b) => b - a).slice(0, highScoreListLength)
+);
+
+export const setHighScore = (score: number): void => {
+  localStorage.setItem('scores', addHighScore(getHighScores(), score).join(','));
+};

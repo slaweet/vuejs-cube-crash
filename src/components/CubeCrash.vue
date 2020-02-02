@@ -11,10 +11,13 @@
       Built with <a href="https://vuejs.org/" target="_blank">Vue.js</a>
       and ❤️  by <a href="https://github.com/slaweet" target="_blank">slaweet</a>
     </div>
-    <div class="status" v-if="gameStatus">
-      <h1>{{gameStatus}}</h1>
-      <div>
-        <button @:click="startNewGame">New game</button>
+    <div class="overlay" v-if="gameStatus">
+      <div class="modal">
+        <h1>{{gameStatus}}</h1>
+        <HighScoreBoard :scores="highScores" :currentScore="score" />
+        <div>
+          <button @click="startNewGame">New game</button>
+        </div>
       </div>
     </div>
   </div>
@@ -23,6 +26,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import CubeBoard from './CubeBoard.vue';
+import HighScoreBoard from './HighScoreBoard.vue';
 import { CubeGrid, Coordinates } from '../types';
 import {
   areCrashable,
@@ -30,11 +34,14 @@ import {
   generateCubes,
   getCrashedCubesValue,
   getCubesToCrash,
+  setHighScore,
+  getHighScores,
 } from '../utils';
 
 @Component({
   components: {
     CubeBoard,
+    HighScoreBoard,
   },
 })
 export default class CubeCrash extends Vue {
@@ -44,12 +51,15 @@ export default class CubeCrash extends Vue {
 
   private gameStatus:string = '';
 
+  private highScores:number[] = [];
+
   mounted() {
     this.startNewGame();
   }
 
   startNewGame() {
     this.score = 0;
+    this.highScores = getHighScores();
     this.cubes = generateCubes();
     this.gameStatus = '';
   }
@@ -65,9 +75,13 @@ export default class CubeCrash extends Vue {
 
   checkEndOfGame():void {
     if (this.cubes.length === 0) {
-      this.gameStatus = 'You won!';
+      this.gameStatus = 'You have won!';
     } else if (this.noGroupOfThreeLeft()) {
       this.gameStatus = 'Game over!';
+    }
+    if (this.gameStatus) {
+      setHighScore(this.score);
+      this.highScores = getHighScores();
     }
   }
 
@@ -99,6 +113,10 @@ export default class CubeCrash extends Vue {
   align-items: center;
 }
 
+h1 {
+  margin: 0;
+}
+
 h2 {
   padding-right: 10px;
 }
@@ -111,16 +129,25 @@ button {
   cursor: pointer;
 }
 
-.status {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: #fff;
+.overlay {
   background: rgba(0,0,0,0.5);
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 6px;
+  margin: 20px auto;
+  padding: 40px;
+  min-width: 400px;
+  box-shadow: 0 2px 4px 0 rgba(12, 21, 46, 0.24);
+
 }
 </style>
