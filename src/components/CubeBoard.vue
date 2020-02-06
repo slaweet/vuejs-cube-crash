@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper">
     <div v-for="(column, y) in cubes"
-      v-bind:key="column[0].id - column[0].id % gridSize"
+      :key="column[0].id - column[0].id % gridSize"
       class="column">
       <transition-group class="column" name="crash" tag="div">
         <button v-for="(cube, x) in column"
-          v-bind:key="cube.id"
+          :key="cube.id"
           @click="handleCubeClick({ x, y })"
           @mouseover="activeGroupHash = cube.groupHash"
           @mouseleave="activeGroupHash = null"

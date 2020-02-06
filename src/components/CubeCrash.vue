@@ -3,7 +3,7 @@
     <div class="controls">
       <h2>Score: {{score}}</h2>
       <div>
-        <button v-on:click="startNewGame">New game</button>
+        <button @click="startNewGame">New game</button>
       </div>
     </div>
     <CubeBoard :cubes="cubes" :handleCubeClick="handleCubeClick" />
@@ -14,7 +14,7 @@
     <div class="status" v-if="gameStatus">
       <h1>{{gameStatus}}</h1>
       <div>
-        <button v-on:click="startNewGame">New game</button>
+        <button @:click="startNewGame">New game</button>
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@ export default class CubeCrash extends Vue {
     const cubesToCrash = getCubesToCrash(this.cubes, coordinates);
     if (areCrashable(cubesToCrash)) {
       this.cubes = fiterCrashedCubes(this.cubes, cubesToCrash);
-      this.score = this.score + getCrashedCubesValue(cubesToCrash);
+      this.score += getCrashedCubesValue(cubesToCrash);
       this.checkEndOfGame();
     }
   }
