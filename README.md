@@ -1,3 +1,6 @@
+
+[![CircleCI](https://circleci.com/gh/slaweet/vuejs-cube-crash.svg?style=shield)](https://circleci.com/gh/slaweet/vuejs-cube-crash)
+[![codecov](https://codecov.io/gh/slaweet/vuejs-cube-crash/branch/master/graph/badge.svg)](https://codecov.io/gh/slaweet/vuejs-cube-crash)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/slaweet/vuejs-cube-crash.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/slaweet/vuejs-cube-crash/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/slaweet/vuejs-cube-crash.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/slaweet/vuejs-cube-crash/context:javascript)
 [![Dependencies Status](https://david-dm.org/slaweet/vuejs-cube-crash/status.svg)](https://david-dm.org/slaweet/vuejs-cube-crash)
