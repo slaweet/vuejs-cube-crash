@@ -16,7 +16,7 @@
         <h1>{{gameStatus}}</h1>
         <HighScoreBoard :scores="highScores" :currentScore="score" />
         <div>
-          <button @click="startNewGame">New game</button>
+          <button @click="startNewGame" class="newGame" >New game</button>
         </div>
       </div>
     </div>

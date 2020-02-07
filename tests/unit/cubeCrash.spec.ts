@@ -39,7 +39,7 @@ describe('CubeCrash.vue', () => {
     expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2);
   });
 
-  it('shows high scores at the end of a game', () => {
+  it('shows high scores at the end of a game and allows starting a new game', () => {
     const wrapper = mount(CubeCrash, { });
     let remainingCubes = gridSize ** 2;
     let cubeToClick;
@@ -54,5 +54,8 @@ describe('CubeCrash.vue', () => {
     }
 
     expect(wrapper.find('.highScores h3').text()).toEqual('High Scores');
+
+    wrapper.find('.newGame').trigger('click');
+    expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2);
   });
 });
