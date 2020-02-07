@@ -11,6 +11,7 @@
           @mouseleave="activeGroupHash = null"
           :class="[
             'cube',
+            cube.groupHash && 'isCrashable',
             cube.groupHash && cube.groupHash === activeGroupHash && 'active',
           ].join(' ')"
           :style="{ background: cube.color, color: cube.color }">

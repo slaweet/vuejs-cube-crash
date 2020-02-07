@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" v-show="scores.lenght !== 0">
+  <div class="highScores" v-show="scores.lenght !== 0">
     <h3>High Scores</h3>
     <table>
       <tr><th>Rank</th><th>Score</th></tr>
@@ -25,7 +25,7 @@ export default class HighScoreBoard extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.wrapper {
+.highScores {
   text-align: left;
   margin: 20px;
   padding: 0 20px;
