@@ -4,10 +4,12 @@ import CubeCrash from '@/components/CubeCrash.vue';
 import { gridSize, minimumCrashSize } from '../../src/config';
 
 describe('CubeCrash.vue', () => {
+  const initialCubeCount = gridSize ** 2;
+
   it('renders grid of gridSize X gridSize cubes', async () => {
     const wrapper = mount(CubeCrash, { });
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2);
+    expect(wrapper.findAll('.cube')).toHaveLength(initialCubeCount);
   });
 
   it('highlights cubes of the same group on hover', () => {
@@ -26,8 +28,8 @@ describe('CubeCrash.vue', () => {
     const cubesToBeCrashed = wrapper.findAll('.cube.active').length;
     cubeToClick.trigger('click');
     expect(wrapper.findAll('.cube.active')).toHaveLength(0);
-    expect(wrapper.findAll('.cube').length).toBeLessThanOrEqual(gridSize ** 2 - minimumCrashSize);
-    expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2 - cubesToBeCrashed);
+    expect(wrapper.findAll('.cube').length).toBeLessThanOrEqual(initialCubeCount - minimumCrashSize);
+    expect(wrapper.findAll('.cube')).toHaveLength(initialCubeCount - cubesToBeCrashed);
   });
 
   it('ignores click on cube with too small group', () => {
@@ -36,12 +38,12 @@ describe('CubeCrash.vue', () => {
     cubeToClick.trigger('mouseover');
     expect(wrapper.findAll('.cube.active')).toHaveLength(0);
     cubeToClick.trigger('click');
-    expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2);
+    expect(wrapper.findAll('.cube')).toHaveLength(initialCubeCount);
   });
 
   it('shows high scores at the end of a game and allows starting a new game', () => {
     const wrapper = mount(CubeCrash, { });
-    let remainingCubes = gridSize ** 2;
+    let remainingCubes = initialCubeCount;
     let cubeToClick;
 
     while (wrapper.findAll('.cube.isCrashable').length > 0) {
@@ -56,6 +58,6 @@ describe('CubeCrash.vue', () => {
     expect(wrapper.find('.highScores h3').text()).toEqual('High Scores');
 
     wrapper.find('.newGame').trigger('click');
-    expect(wrapper.findAll('.cube')).toHaveLength(gridSize ** 2);
+    expect(wrapper.findAll('.cube')).toHaveLength(initialCubeCount);
   });
 });
